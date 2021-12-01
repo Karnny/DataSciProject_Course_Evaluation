@@ -3,6 +3,12 @@
 import streamlit as st
 import pandas as pd
 import pickle as pk
+import bz2
+
+def decompress_pickle(file):
+    data = bz2.BZ2File(file, 'rb')
+    data = pk.load(data)
+    return data
 
 
 # !Header App
@@ -82,7 +88,8 @@ def do_predict(df):
 
     st.subheader('Normalization')
     normalizer = pk.load(open('normalization.pkl', 'rb'))
-    knn = pk.load(open('best_knn.pkl', 'rb'))
+    # knn = pk.load(open('best_knn.pkl', 'rb'))
+    knn = decompress_pickle('best_knn_compressed.pbz2')
 
     X_new = normalizer.transform(all_features)
     st.write(X_new)
